@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,7 +27,7 @@ public class StockEntity{
     private String name;
 
     @Column(name = "currentPrice")
-    private String currentPrice;
+    private BigDecimal currentPrice;
 
     @CreationTimestamp
     private LocalDateTime createDate;

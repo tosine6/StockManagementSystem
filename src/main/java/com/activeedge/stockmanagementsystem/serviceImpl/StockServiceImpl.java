@@ -6,7 +6,9 @@ import com.activeedge.stockmanagementsystem.requestDTO.StockRequestDTO;
 import com.activeedge.stockmanagementsystem.responseDTO.StockResponseDTO;
 import com.activeedge.stockmanagementsystem.service.StockService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,8 +21,9 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public StockResponseDTO getStock(long stockId) {
-        StockEntity stock= stockRepository.getById(stockId);
-        return StockResponseDTO.builder().name(stock.getName()).currentPrice(stock.getCurrentPrice()).build();
+        StockEntity stock= stockRepository.findById(stockId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock not found with id: "+ stockId));
+        return mapStock(stock);
     }
 
     @Override
@@ -31,12 +34,13 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public StockResponseDTO updateStock(StockRequestDTO stockRequestDTO, Long stockId) {
-        StockEntity stock= stockRepository.getById(stockId);
+        StockEntity stock= stockRepository.findById(stockId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock not found with id: "+ stockId));
         if(null != stockRequestDTO.getName()){
             stock.setName(stockRequestDTO.getName());
         }
         if(null != stockRequestDTO.getCurrentPrice()){
-            stock.setName(stockRequestDTO.getCurrentPrice());
+            stock.setCurrentPrice(stockRequestDTO.getCurrentPrice());
         }
         stockRepository.saveAndFlush(stock);
         return mapStock(stock);
@@ -52,6 +56,6 @@ public class StockServiceImpl implements StockService {
     }
 
     public StockResponseDTO mapStock(StockEntity stock) {
-        return StockResponseDTO.builder().name(stock.getName()).currentPrice(stock.getCurrentPrice()).build();
+        return StockResponseDTO.builder().id(stock.getId()).name(stock.getName()).currentPrice(stock.getCurrentPrice()).createDate(stock.getCreateDate()).lastUpdate(stock.getLastUpdate()) .build();
     }
 }

@@ -23,7 +23,7 @@ public class StockController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<APIResponse<List<StockResponseDTO>>> fetchAllStock(){
         APIResponse<List<StockResponseDTO>> response = new APIResponse<>("Success", stockService.fetchAllStocks());
         return ResponseEntity.ok(response);
@@ -35,7 +35,7 @@ public class StockController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<APIResponse<StockResponseDTO>> createStock(@RequestBody StockRequestDTO stockRequestDTO){
         APIResponse<StockResponseDTO> response = new APIResponse<>("Success", stockService.createStock(stockRequestDTO));
         return ResponseEntity.ok(response);
